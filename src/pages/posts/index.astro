@@ -1,0 +1,85 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import postDates from '../../data/post-dates.json';
+
+const allPosts = await getCollection('posts');
+const sorted = allPosts
+  .map((p) => ({
+    slug: p.id.replace(/\.md$/, '').replace(/\/index\.md$/, ''),
+    title: p.data.title,
+    date: postDates[p.id.replace(/\.md$/, '').replace(/\/index\.md$/, '')] || null,
+  }))
+  .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+---
+
+<Layout title="Posts">
+  <h1>Posts</h1>
+
+  {sorted.length > 0 ? (
+    <ul class="post-list">
+      {sorted.map((post) => (
+        <li>
+          <a href={`/posts/${post.slug}`}>
+            <span class="post-title">{post.title}</span>
+            {post.date && <time datetime={post.date}>{new Date(post.date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'short', day: 'numeric' })}</time>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="empty">Nenhum post ainda.</p>
+  )}
+</Layout>
+
+<style>
+  h1 {
+    font-size: 28px;
+    margin-bottom: 32px;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-list li {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-list li:last-child {
+    border-bottom: none;
+  }
+
+  .post-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    text-decoration: none;
+    color: var(--text);
+    transition: opacity 0.2s;
+  }
+
+  .post-list a:hover {
+    opacity: 0.7;
+  }
+
+  .post-title {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .post-list time {
+    font-size: 14px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .empty {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+</style>

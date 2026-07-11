@@ -1,0 +1,103 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import postDates from '../../data/post-dates.json';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => {
+    const slug = post.id.replace(/\.md$/, '').replace(/\/index\.md$/, '');
+    return { params: { slug }, props: { post, slug } };
+  });
+}
+
+const { post, slug } = Astro.props;
+const { Content } = await render(post);
+const postDate = postDates[slug] || null;
+---
+
+<Layout title={post.data.title}>
+  <article>
+    <header class="post-header">
+      <h1>{post.data.title}</h1>
+      {postDate && (
+        <time datetime={postDate}>
+          {new Date(postDate).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+      )}
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="tags">
+          {post.data.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+    <div class="content">
+      <Content />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post-header {
+    margin-bottom: 40px;
+  }
+
+  .post-header h1 {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .post-header time {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 12px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+
+  .content {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .content p {
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  .content img {
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+
+  .content :global(pre) {
+    margin: 24px 0;
+  }
+
+  .content :global(code) {
+    font-size: 14px;
+  }
+
+  .content :global(h2) {
+    margin-top: 40px;
+  }
+
+  .content :global(h3) {
+    margin-top: 32px;
+  }
+</style>
