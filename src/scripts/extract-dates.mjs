@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { statSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { globSync } from 'glob';
 import { resolve, dirname } from 'path';
@@ -26,11 +26,8 @@ for (const file of files) {
       dates[slug] = dateStr;
     }
   } catch {
-    // fallback: file modification time
-    try {
-      const stats = readFileSync(file, 'utf-8');
-      dates[slug] = new Date().toISOString();
-    } catch {}
+    const mtime = statSync(file).mtime;
+    dates[slug] = mtime.toISOString();
   }
 }
 

@@ -13,6 +13,21 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title} — Miguel Monteiro</title>
+    <script is:inline>
+      (function() {
+        var theme = localStorage.getItem('theme');
+        if (!theme) {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.setProperty('color-scheme', theme);
+        var bg = theme === 'dark' ? '#0a0a0a' : '#ffffff';
+        document.documentElement.style.backgroundColor = bg;
+        addEventListener('DOMContentLoaded', function () {
+          document.documentElement.style.backgroundColor = '';
+        });
+      })();
+    </script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap');
     </style>
@@ -78,16 +93,25 @@ const { title } = Astro.props;
 
   * { box-sizing: border-box; }
 
+  html {
+    background: var(--bg);
+    color-scheme: light;
+    transition: background 0.3s;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+  }
+
   body {
     margin: 0;
     padding: 0;
     font-family: var(--font);
-    background: var(--bg);
     color: var(--text);
     line-height: 1.6;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
-    transition: background 0.3s, color 0.3s;
+    transition: color 0.3s;
   }
 
   header {

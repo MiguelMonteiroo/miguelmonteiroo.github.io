@@ -2,15 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import postDates from '../../data/post-dates.json';
+import { getSortedPosts } from '../../utils';
 
 const allPosts = await getCollection('posts');
-const sorted = allPosts
-  .map((p) => ({
-    slug: p.id.replace(/\.md$/, '').replace(/\/index\.md$/, ''),
-    title: p.data.title,
-    date: postDates[p.id.replace(/\.md$/, '').replace(/\/index\.md$/, '')] || null,
-  }))
-  .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+const sorted = getSortedPosts(allPosts, postDates);
 ---
 
 <Layout title="Posts">
