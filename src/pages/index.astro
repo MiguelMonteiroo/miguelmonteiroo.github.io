@@ -37,7 +37,16 @@ const sorted = getSortedPosts(allPosts, postDates, 5);
         {sorted.map((post) => (
           <li>
             <a href={`/posts/${post.slug}`}>
-              <span class="post-title">{post.title}</span>
+              <span class="post-info">
+                <span class="post-title">{post.title}</span>
+                {post.tags.length > 0 && (
+                  <span class="tags" aria-label="Tags">
+                    {post.tags.map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </span>
+                )}
+              </span>
               {post.date && <time datetime={post.date}>{new Date(post.date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'short', day: 'numeric' })}</time>}
             </a>
           </li>
@@ -146,6 +155,30 @@ const sorted = getSortedPosts(allPosts, postDates, 5);
   .post-title {
     font-size: 15px;
     font-weight: 500;
+  }
+
+  .post-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .tags {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 11px;
+    line-height: 1;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 8px;
   }
 
   .post-list time {

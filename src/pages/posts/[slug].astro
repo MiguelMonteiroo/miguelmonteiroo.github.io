@@ -21,18 +21,20 @@ const postDate = postDates[slug] || null;
   <a href="/posts" class="back-link">&larr; Todos os posts</a>
   <article>
     <header class="post-header">
-      <h1>{post.data.title}</h1>
+      <div class="title-row">
+        <h1>{post.data.title}</h1>
+        {post.data.tags && post.data.tags.length > 0 && (
+          <div class="tags" aria-label="Tags">
+            {post.data.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
       {postDate && (
         <time datetime={postDate}>
           {new Date(postDate).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}
         </time>
-      )}
-      {post.data.tags && post.data.tags.length > 0 && (
-        <div class="tags">
-          {post.data.tags.map((tag) => (
-            <span class="tag">{tag}</span>
-          ))}
-        </div>
       )}
     </header>
     <div class="content">
@@ -61,19 +63,27 @@ const postDate = postDates[slug] || null;
 
   .post-header h1 {
     font-size: 32px;
+    margin-bottom: 0;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 8px;
+    flex-wrap: wrap;
   }
 
   .post-header time {
+    display: block;
     font-size: 14px;
     color: var(--text-secondary);
+    margin-top: 8px;
   }
 
   .tags {
     display: flex;
     gap: 8px;
-    margin-top: 12px;
-    margin-bottom: 8px;
     flex-wrap: wrap;
   }
 

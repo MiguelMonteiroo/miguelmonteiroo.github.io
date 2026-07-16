@@ -13,6 +13,7 @@ export function getSortedPosts(
     .map((p) => ({
       slug: slugFromId(p.id),
       title: p.data.title,
+      tags: p.data.tags || [],
       date: dates[slugFromId(p.id)] || null,
     }))
     .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
